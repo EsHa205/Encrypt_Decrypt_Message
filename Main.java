@@ -104,7 +104,7 @@ class Shift extends Algorithm {
     protected String encrypt(@NotNull String message, int key) {
         key %= 26;
         char[] charArray = message.toCharArray();
-        String encryptedMessage = "";
+        StringBuilder encryptedMessage = new StringBuilder();
         for (char singleChar : charArray) {
             char newChar = singleChar;
 
@@ -124,15 +124,15 @@ class Shift extends Algorithm {
                 }
             }
 
-            encryptedMessage += newChar;
+            encryptedMessage.append(newChar);
         }
-        return encryptedMessage;
+        return encryptedMessage.toString();
     }
 
     protected String decrypt(@NotNull String message, int key) {
         key %= 26;
         char[] charArray = message.toCharArray();
-        String decryptedMessage = "";
+        StringBuilder decryptedMessage = new StringBuilder();
         for (char singleChar : charArray) {
             char newChar = singleChar;
 
@@ -152,9 +152,9 @@ class Shift extends Algorithm {
                 }
             }
 
-            decryptedMessage += newChar;
+            decryptedMessage.append(newChar);
         }
-        return decryptedMessage;
+        return decryptedMessage.toString();
     }
 }
 
@@ -163,24 +163,24 @@ class Unicode extends Algorithm {
     protected String encrypt(@NotNull String message, int key) {
         //key %= 26;
         char[] charArray = message.toCharArray();
-        String encryptedMessage = "";
+        StringBuilder encryptedMessage = new StringBuilder();
         for (char singleChar : charArray) {
             char newChar = singleChar;
             newChar += key;
-            encryptedMessage += newChar;
+            encryptedMessage.append(newChar);
         }
-        return encryptedMessage;
+        return encryptedMessage.toString();
     }
 
     protected String decrypt(@NotNull String message, int key) {
         //key %= 26;
         char[] charArray = message.toCharArray();
-        String decryptedMessage = "";
+        StringBuilder decryptedMessage = new StringBuilder();
         for (char singleChar : charArray) {
             char newChar = singleChar;
             newChar -= key;
-            decryptedMessage += newChar;
+            decryptedMessage.append(newChar);
         }
-        return decryptedMessage;
+        return decryptedMessage.toString();
     }
 }
