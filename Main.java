@@ -12,10 +12,13 @@ public class Main
 
         String operation = "";
         String message = "";
-        int key = 0;
         String pathFileIn = "";
         String pathFileOut = "";
         String resultMessage = "";
+        String algorithm = "";
+        int key = 0;
+        Algorithm alg;
+
 
         // args check
         for (int i = 0; i < args.length; i++) {
@@ -35,6 +38,9 @@ public class Main
                 case "-out":
                     pathFileOut = args[i + 1];
                     break;
+                case "-alg":
+                    algorithm = args[i + 1];
+                    break;
             }
         }
 
@@ -42,10 +48,18 @@ public class Main
             message = readFile(pathFileIn);
         }
 
+        if ("shift".equals(algorithm)) {
+            alg = new Shift();
+        } else if ("unicode".equals(algorithm)) {
+            alg = new Unicode();
+        } else {
+            alg = new Shift();
+        }
+
         if (operation.isEmpty() || operation.equals("enc")) {
-            resultMessage = encrypt(message, key);
+            resultMessage = alg.encrypt(message, key);
         } else if (operation.equals("dec")) {
-            resultMessage = decrypt(message, key);
+            resultMessage = alg.decrypt(message, key);
         } else {
             System.out.println("No valid mode selected!");
         }
@@ -77,8 +91,77 @@ public class Main
         }
     }
 
-    private static String encrypt(@NotNull String message, int key) {
+}
+
+abstract class Algorithm {
+
+    abstract String encrypt(@NotNull String message, int key);
+    abstract String decrypt(@NotNull String message, int key);
+}
+
+class Shift extends Algorithm {
+
+    protected String encrypt(@NotNull String message, int key) {
         key %= 26;
+        char[] charArray = message.toCharArray();
+        String encryptedMessage = "";
+        for (char singleChar : charArray) {
+            char newChar = singleChar;
+
+            if (singleChar >= 65 && singleChar <= 90) {
+                newChar += key;
+                if (newChar < 65) {
+                    newChar += 26;
+                } else if (newChar > 90) {
+                    newChar -= 26;
+                }
+            } else if (singleChar >= 97 && singleChar <= 122) {
+                newChar += key;
+                if (newChar < 97) {
+                    newChar += 26;
+                } else if (newChar > 122) {
+                    newChar -= 26;
+                }
+            }
+
+            encryptedMessage += newChar;
+        }
+        return encryptedMessage;
+    }
+
+    protected String decrypt(@NotNull String message, int key) {
+        key %= 26;
+        char[] charArray = message.toCharArray();
+        String decryptedMessage = "";
+        for (char singleChar : charArray) {
+            char newChar = singleChar;
+
+            if (singleChar >= 65 && singleChar <= 90) {
+                newChar -= key;
+                if (newChar < 65) {
+                    newChar += 26;
+                } else if (newChar > 90) {
+                    newChar -= 26;
+                }
+            } else if (singleChar >= 97 && singleChar <= 122) {
+                newChar -= key;
+                if (newChar < 97) {
+                    newChar += 26;
+                } else if (newChar > 122) {
+                    newChar -= 26;
+                }
+            }
+
+            decryptedMessage += newChar;
+        }
+        return decryptedMessage;
+    }
+}
+
+class Unicode extends Algorithm {
+
+    protected String encrypt(@NotNull String message, int key) {
+        //key %= 26;
         char[] charArray = message.toCharArray();
         String encryptedMessage = "";
         for (char singleChar : charArray) {
@@ -89,8 +172,8 @@ public class Main
         return encryptedMessage;
     }
 
-    private static String decrypt(@NotNull String message, int key) {
-        key %= 26;
+    protected String decrypt(@NotNull String message, int key) {
+        //key %= 26;
         char[] charArray = message.toCharArray();
         String decryptedMessage = "";
         for (char singleChar : charArray) {
